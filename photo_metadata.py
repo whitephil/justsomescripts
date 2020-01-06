@@ -67,8 +67,8 @@ place_points = possible_matches.geometry.unary_union
 #Finds nearest in places possible matches and returns FEATURE_NA (landmark) and and FEATURE_CL (landmark type)
 def near(point, pts=place_points):
     nearest = possible_matches.geometry == nearest_points(point, pts)[1]
-    landmark = possible_matches[nearest].FEATURE_NA.get_values()[0]
-    landmark_type = possible_matches[nearest].FEATURE_CL.get_values()[0]
+    landmark = possible_matches[nearest].FEATURE_NA.iloc[0]
+    landmark_type = possible_matches[nearest].FEATURE_CL.iloc[0]
     return landmark, landmark_type
 
 #Applies near function to the photos_quads gdf
