@@ -3,7 +3,7 @@ import os
 import glob
 import json
 
-#This Python script iterates over imdex map shapefiles and transforms them to geojson formart,
+#This Python script iterates over index map shapefiles and transforms them to geojson format,
 #and converts appropriate attributes to json boolean values.
 #Your input shapefiles should follow the Open Index Map project GIS Index Map Creation Requirements and Recommendations document.
 
