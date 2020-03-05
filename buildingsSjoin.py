@@ -6,7 +6,7 @@ import os
 
 os.chdir('C:\\Users\\phwh9568\\Data')
 
-buildings = gpd.read_file('Colorado_Microsoft_Footprints\\Colorado.geojson')
+buildings = gpd.read_file('Colorado_Microsoft_Footprints\\Colorado2.geojson')
 countyUS = gpd.read_file('tl_2019_us_county\\tl_2019_us_county.shp')
 
 countyUS = countyUS.to_crs({'init': 'epsg:4326'})
