@@ -6,7 +6,7 @@ from time import sleep
 import os
 
 # Set the working directory. Double slashes required for windows, single slashes fine for mac
-os.chdir('E:\\Users\\phwh9568\\Geocode')
+os.chdir('C:\\Users\\phwh9568\\Geocode')
 
 # the url for the mapquest api
 # if you want to query the mapbquest "open" api, replace the "www" in this url with "open"
@@ -19,7 +19,7 @@ keyLoc = 'key=YOUR KEY HERE&location='
 # imports the input csv into a pandas dataframe, csv should have "Address" as header and full addresses in each row
 data = pd.read_csv('BoulderDisp.csv')
 
-with open('BoulderDisp_GeocodedResults.csv', 'a', newline='', encoding='utf-8') as f:
+with open('BoulderDisp_GeocodedResults_test.csv', 'a', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow(['precinct','address', 'latitude', 'longitude', 'geocode quality code', 'geocode quality'])
     for index, row in data.iterrows():
