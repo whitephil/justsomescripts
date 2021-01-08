@@ -48,7 +48,7 @@ with open(os.path.join(dir1,'albumList.csv'), 'a', newline='', encoding='utf-8')
                         filename = file[:-5]
                         flac = AudioSegment.from_file(os.path.join(dir1,artist,album,file), 'flac')
                         tags = mediainfo(os.path.join(dir1,artist,album,file)).get('TAG',None)
-                        flac.export(os.path.join(dir2,artist,album,filename+'.mp3'), format='mp3', tags=tags)
+                        flac.export(os.path.join(dir2,artist,album,filename+'.m4a'), format='ipod', tags=tags)
 
 
                     #copy album art to mp3 folder
