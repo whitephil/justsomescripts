@@ -11,7 +11,7 @@ def clear():
 
 s3 = boto3.client('s3')
 dir1 = os.path.abspath(r'D:\flac')
-dir2 = os.path.abspath(r'C:\Users\phwh9568\Music\iTunes\iTunes Media\Music')
+dir2 = os.path.abspath(r'C:\Users\phwh9568\OneDrive - UCB-O365\UCB\Music\iTunes\iTunes Media\Music')
 
 
 dirList = os.listdir(dir1)
