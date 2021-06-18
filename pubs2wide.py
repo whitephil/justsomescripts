@@ -12,53 +12,53 @@ col_list = ['Name', 'Authors', 'Email', 'Primary group', 'Title OR Chapter Title
 df = df[df.columns.intersection(col_list)]
 
 # function that finds publication metadata and concatenates them into a citation
-def cite(irow):
-    if irow['Authors'] == '':
+def cite(row):
+    if row['Authors'] == '':
         auths = ''
+        date = ''
     else:
-        auths = irow['Authors']+'.'
+        auths = row['Authors']+'.'
+        date = ' '+year+'.'
 
-    date = ' '+year+'.'
-
-    if irow['Title OR Chapter Title'] == '':
+    if row['Title OR Chapter Title'] == '':
         title = ''
     else:
-        title = ' '+irow['Title OR Chapter Title']+'.'
+        title = ' '+row['Title OR Chapter Title']+'.'
 
-    if irow['Canonical journal title'] == '':
+    if row['Canonical journal title'] == '':
         pub = ''
     else:
-        pub = ' '+irow['Canonical journal title']+'.'
+        pub = ' '+row['Canonical journal title']+'.'
 
-    if irow['Volume'] == '':
+    if row['Volume'] == '':
         vol = ''
     else:
-        vol = ' '+irow['Volume']+'.'
+        vol = ' '+row['Volume']+'.'
 
-    if irow['Issue'] == '':
+    if row['Issue'] == '':
         iss = ''
     else:
-        iss = ' '+irow['Issue']+'.'
+        iss = ' '+row['Issue']+'.'
 
-    if irow['DOI'] == '':
+    if row['DOI'] == '':
         doi = ''
     else:
-        doi = ' '+irow['DOI']+'.'
+        doi = ' '+row['DOI']+'.'
 
     citation = auths + date + title + pub + vol + iss + doi
 
     return citation
 
 # function that splits full names into individual first, middle, last name fields
-def names(irow):
+def names(row):
 
-    if len(irow) == 0:
+    if len(row) == 0:
         nl = ''
         nf = ''
         nm = ''
 
     else:
-        n = irow['Name'].title()
+        n = row['Name'].title()
 
         nl = n.split(', ')[0]
 
@@ -88,21 +88,24 @@ df['Middle Name'] = df.apply(lambda row: names(row)[2], axis = 1)
 col_list2 = ['Name', 'Pub']
 df2 = df[col_list2].copy() #create the new daframe named df2
 
+#creating the groups and adding a new 'group' column
+df2 = df2.assign(group = df.groupby('Name').cumcount())
 
-df2 = df2.assign(group = df.groupby('Name').cumcount()) #creating the groups and adding a new 'group' column
-citations = df2.pivot(index = 'Name', columns = 'group') #pivot function with names in the index position (vertical) and groups become columns (horizontal)
+#pivot function with names in the index position (vertical) and groups become columns (horizontal)
+citations = df2.pivot(index = 'Name', columns = 'group')
 
 #pivot creates multi-index dataframe. This will reset it to a single index (or in other words takes the 2 header row and makes 1 header row)
 citations.columns =  [col[0] + '_' + str(col[1]+1) for col in citations.columns.values]
 
+#the columns we need for our new dataframe
+col_list3 = ['Name', 'Last Name', 'First Name', 'Middle Name', 'Primary group', 'Email']
+contacts = df[col_list3] #create new contacts dataframe that consists of just names, departments, and emails from original df
 
-col_list3 = ['Name', 'Last Name', 'First Name', 'Middle Name', 'Primary group', 'Email'] #the columns we need for our new dataframe
-df3 = df[col_list3] #create new df3 that consists of just names, departments, and emails from original df
-
-contacts = df3.drop_duplicates(subset = ['Name'], keep = 'first')
+# deduplicate, reindex, drop unneeded 'index' column
+contacts = contacts.drop_duplicates(subset = ['Name'], keep = 'first')
 contacts.reset_index(inplace=True)
 contacts = contacts.drop(columns=['index'])
 
 #merge the citations back to the names & contact info
 finaldf = contacts.merge(citations, how= 'left', left_on = 'Name', right_on = 'Name')
-finaldf.to_csv('test2.csv') #view the results
+finaldf.to_csv('test3.csv', encoding='utf-8') #view the results
