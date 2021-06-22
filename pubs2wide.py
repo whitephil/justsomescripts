@@ -11,8 +11,8 @@ do_not_file_name = 'DoNotContactList2020.csv'
 # Provide a name for the output csv (no extension)
 output_name = 'CUPubs2020_output'
 
-# read in the input file and do not contact file
-df = pd.read_csv(pub_file_name, encoding = 'iso-8859-1', low_memory = False)
+# read in the input file and do not contact file. If there is an encoding error, replace 'utf-8' with 'iso-8859-1'
+df = pd.read_csv(pub_file_name, encoding = 'utf-8', low_memory = False)
 dnc = pd.read_csv(do_not_file_name)
 
 # rename the publication date field to pubDate
