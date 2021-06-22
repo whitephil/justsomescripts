@@ -3,11 +3,43 @@ import os
 
 os.chdir('C:/Users/phwh9568/CUPubs_mailprep') #set the directory to your folder with the pub data
 
-year = '(2020)'
+# fill in these variables each year with new file names and year
+year = '2020' #be sure to leave the quotes here
+pub_file_name = 'Publications_UserObjectPairs_From20200101_To20201231_20210622.csv'
+do_not_file_name = 'DoNotContactList2020.csv'
 
-df = pd.read_csv('CUPublications_2017FRPA.csv', encoding = 'iso-8859-1', low_memory = False)
+# Provide a name for the output csv (no extension)
+output_name = 'CUPubs2020_output'
+
+# read in the input file and do not contact file
+df = pd.read_csv(pub_file_name, encoding = 'iso-8859-1', low_memory = False)
+dnc = pd.read_csv(do_not_file_name)
+
+# rename the publication date field to pubDate
+df.rename(columns={'Publication date OR Publication date or Presentation Date OR Presentation date OR Presented date OR Date awarded OR Date': 'pubDate'}, inplace=True)
+
+# fill empty column with blanks to avoid nan values later
 df.fillna('', inplace=True)
 
+# Pre-filters:
+# Drop articles published by AMS
+df = df.loc[(df['Publisher'] != 'American Meteorological Society') & (df['Publisher'] != 'AMER METEOROLOGICAL SOC')]
+# drop anything that is not a journal article or conference proceeding
+df = df.loc[(df['Publication type'] == 'Journal article') | (df['Publication type'] == 'Conference Proceeding')]
+# drop anything already indexed by DOAJ
+df = df.loc[df['Indexed in DOAJ'] != 'Yes']
+# drop articles not published in the year specified above (articles with blank pubDate field will remain)
+df = df.loc[(df['pubDate']=='') | (df['pubDate'].str.match(fr'\b{year}\b')==True)]
+# drop if reporting data is blank
+df = df.loc[df['Reporting date 1'] != '']
+
+# read do not contact names into a list
+dnc_list = dnc['Elements_Name'].to_list()
+# iterate over do not contact list names and drop them
+for name in dnc_list:
+    df = df.loc[df['Name']!=name]
+
+# drop all unnecessary columns
 col_list = ['Name', 'Authors', 'Email', 'Primary group', 'Title OR Chapter Title', 'Canonical journal title', 'Volume', 'Issue', 'DOI', 'Primary group', 'Email']
 df = df[df.columns.intersection(col_list)]
 
@@ -18,7 +50,7 @@ def cite(row):
         date = ''
     else:
         auths = row['Authors']+'.'
-        date = ' '+year+'.'
+        date = ' ('+year+').'
 
     if row['Title OR Chapter Title'] == '':
         title = ''
@@ -108,4 +140,4 @@ contacts = contacts.drop(columns=['index'])
 
 #merge the citations back to the names & contact info
 finaldf = contacts.merge(citations, how= 'left', left_on = 'Name', right_on = 'Name')
-finaldf.to_csv('test3.csv', encoding='utf-8') #view the results
+finaldf.to_csv(output_name+'.csv', encoding='utf-8') #view the results
