@@ -5,11 +5,11 @@ os.chdir('C:/Users/phwh9568/CUPubs_mailprep') #set the directory to your folder 
 
 # fill in these variables each year with new file names and year. Each file needs to be in same directory
 year = '2020' #be sure to leave the quotes here
-pub_file_name = 'Publications_UserObjectPairs_From20200101_To20201231_20210622.csv'
+pub_file_name = 'Publications_UserObjectPairs_From20200101_To20201231_20210702.csv'
 do_not_file_name = 'DoNotContactList2020.csv'
 
 # Provide a name for the output csv (no extension)
-output_name = 'CUPubs2020_output3'
+output_name = 'CUPubs2020_output5'
 
 # read in the input file and do not contact file. If there is an encoding error, replace 'utf-8' with 'iso-8859-1'
 df = pd.read_csv(pub_file_name, encoding = 'utf-8', low_memory = False)
@@ -29,7 +29,7 @@ df = df.loc[(df['Publication type'] == 'Journal article') | (df['Publication typ
 # drop anything already indexed by DOAJ
 df = df.loc[(df['Indexed in DOAJ'] != 'Yes') & (df['Indexed in DOAJ'] != '')]
 # drop articles not published in the year specified above (articles with blank pubDate field will remain)
-df = df.loc[(df['pubDate']=='') | (df['pubDate'].str.match(fr'\b{year}\b|/{year[2:]}$')==True)]
+df = df.loc[(df['pubDate']=='') | (df['pubDate'].str.match(fr'\b{year}\b')==True) | (df['pubDate'].str.endswith(fr'/{year[2:]}')==True)]
 # drop if reporting data is blank
 df = df.loc[df['Reporting date 1'] != '']
 
