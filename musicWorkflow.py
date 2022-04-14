@@ -23,7 +23,7 @@ for item in dirList:
         pass
     else:
         artistList.append(item)
-# print(artistList)
+# print (artistList)
 
 inAlbums = pd.read_csv(os.path.join(dir1,'albumList.csv'))
 
