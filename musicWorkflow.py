@@ -10,7 +10,7 @@ def clear():
     os.system('cls')
 
 s3 = boto3.client('s3')
-dir1 = os.path.abspath(r'D:\flac')
+dir1 = os.path.abspath(r'E:\flac')
 dir2 = os.path.abspath(r'C:\Users\phwh9568\OneDrive - UCB-O365\UCB\Music\iTunes\iTunes Media\Music')
 
 
@@ -23,6 +23,7 @@ for item in dirList:
         pass
     else:
         artistList.append(item)
+#print(artistList)
 
 inAlbums = pd.read_csv(os.path.join(dir1,'albumList.csv'))
 
